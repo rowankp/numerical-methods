@@ -5,6 +5,78 @@
 """
 import math
 
+def rk2(x0, y0, xn, n, f):
+    """
+    Runge-Kutta method of order 2 for a single linear equation.
+
+    Parameters
+    ----------
+    x0 : float
+        initial x-value.
+    y0 : float
+        initial f(x0) value.
+    xn : float
+        x-value at which to estimate f.
+    n : integer
+        number of iterations.
+    f : function
+        equation.
+
+    Returns
+    -------
+    t : float
+        estimated f(xn) value.
+    """
+    x_values = [x0]
+    y_estimate = [y0]
+    h = abs((xn-x0)/n)
+
+    for i in range(n):
+        K1 = f(x_values[i], y_estimate[i])
+        K2 = f(x_values[i] + h/2, y_estimate[i] + h*K1/2)
+
+        x_values.append(x_values[i] + h)
+        y_estimate.append(y_estimate[i] + K2*h)
+
+    return y_estimate[-1]
+
+def rk4(x0, y0, xn, n, f):
+    """
+    Runge-Kutta method of order 4 for a single linear equation.
+
+    Parameters
+    ----------
+    x0 : float
+        initial x-value.
+    y0 : float
+        initial f(x0) value.
+    xn : float
+        x-value at which to estimate f.
+    n : integer
+        number of iterations.
+    f : function
+        equation.
+
+    Returns
+    -------
+    t : float
+        estimated f(xn) value.
+    """
+    x_values = [x0]
+    y_estimate = [y0]
+    h = abs((xn-x0)/n)
+
+    for i in range(n):
+        K1 = f(x_values[i], y_estimate[i])
+        K2 = f(x_values[i] + h/2, y_estimate[i] + h*K1/2)
+        K3 = f(x_values[i] + h/2, y_estimate[i] + h*K2/2)
+        K4 = f(x_values[i] + h, y_estimate[i] + h*K3)
+
+        x_values.append(x_values[i] + h)
+        y_estimate.append(y_estimate[i] + ((1/6)*K1 + (1/3)*K2 + (1/3)*K3 + (1/6)*K4)*h)
+
+    return y_estimate[-1]
+
 def rk2_two_eq(t0, tn, n, x0, y0, f1, f2, debug=False):
     """
     Runge-Kutta method of order 2 for a system of two linear equations.
