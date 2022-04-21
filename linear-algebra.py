@@ -131,3 +131,45 @@ def gauss_npp(Ab):
     print("Solution:", (Ab[:, -1]).reshape(-1))
     
     return Ab
+
+def LUdecomp(A):
+    (n,m) = A.shape
+    L = eye(n,m)
+    U = zeros((n,m))
+
+    U = A
+    for k in range(n-1):
+        for j in range(k+1, n):
+            L[j, k] = U[j, k] / U[k, k]
+            U[j, :] = U[j, :] - L[j, k] * U[k, :]
+    return (L,U)
+
+def LUsolve(L, b):
+    n = L.shape[0]
+    y = zeros(n)
+    x = zeros(n)
+
+    for i in range(n):
+        # calculate y[i]
+        y[i] = b[i]
+        for j in range(n):
+            if j != i:
+                y[i] -= L[i, j]
+
+        # substitute forward
+        for k in range(i+1, n):
+            L[k, i] *= y[i]
+
+    for i in range(n-1, -1, -1):
+        # calculate x[i]
+        x[i] = y[i]
+        for j in range(n):
+            if j != i:
+                x[i] -= U[i, j]
+        x[i] /= U[i, i]
+
+        # substitute back
+        for k in range(i-1, -1, -1):
+            U[k, i] *= x[i]
+
+    return x
